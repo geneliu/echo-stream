@@ -1,0 +1,7 @@
+.git
+.github
+.gitignore
+README.md
+deploy.yaml
+*.md
+.DS_Store
