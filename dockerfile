@@ -4,19 +4,19 @@ FROM --platform=$BUILDPLATFORM golang:1.22-alpine AS builder
 WORKDIR /app
 
 COPY go.mod ./
-RUN go mod download
+RUN go mod download && go mod verify
 
-COPY . .
+COPY *.go ./
 
 ARG TARGETOS
 ARG TARGETARCH
 
 RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH \
-    go build -o server echo-stream.go
+    go build -a -trimpath -ldflags "-s -w" -o server echo-stream.go
 
 
 # Runtime stage
-FROM gcr.io/distroless/static-debian12:nonroot
+FROM --platform=$TARGETPLATFORM gcr.io/distroless/static-debian12:nonroot
 
 WORKDIR /app
 COPY --from=builder /app/server .
