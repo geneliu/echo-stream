@@ -6,13 +6,13 @@ WORKDIR /app
 COPY go.mod ./
 RUN go mod download || true
 
-COPY *.go ./
+COPY . .
 
 ARG TARGETOS
 ARG TARGETARCH
 
 RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH \
-    go build -a -trimpath -ldflags "-s -w" -o server echo-stream.go
+    go build -a -trimpath -ldflags "-s -w" -o server .
 
 
 # Runtime stage
