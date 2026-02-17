@@ -17,6 +17,7 @@ import (
 const (
 	DefaultBufferSize   = 32 * 1024         // 32KB
 	MaxDownloadSize     = 100 * 1024 * 1024 // 100MB limit
+	MaxUploadSize       = 32 * 1024 * 1024  // 32MB limit
 	DefaultDownloadSize = 2 * 1024 * 1024   // 2MB default
 	ServerTimeout       = 30 * time.Second
 	ServerPort          = ":8080"
@@ -52,8 +53,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		clientIP, r.Method, r.URL.Path, r.ContentLength, r.UserAgent())
 
 	// Limit request body size to prevent abuse
-	const maxUploadSize = 10 * 1024 * 1024 // 10MB limit
-	r.Body = http.MaxBytesReader(w, r.Body, maxUploadSize)
+	r.Body = http.MaxBytesReader(w, r.Body, MaxUploadSize)
 	defer r.Body.Close()
 
 	// Stream request body directly to discard
